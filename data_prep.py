@@ -20,7 +20,9 @@ import pandas as pd
 # place 목록 생성
 path = "./data/"
 place_list_1 = os.listdir(path+'train')
-
+# val_dir = path+'val/'
+val_dir = path+'test/'
+# val_dir = path+'getMedia9/'
 print("train place list : num = %i " % len(place_list_1))
 print(place_list_1)
 
@@ -53,7 +55,8 @@ print(train_df.head())
 
 print("completed")
 
-place_list_2 = os.listdir(path+'test')
+# place_list_2 = os.listdir(path+'val')
+place_list_2 = os.listdir(val_dir)
 
 print("train place list : num = %i " % len(place_list_2))
 print(place_list_2)
@@ -63,7 +66,8 @@ print(place_list_2)
 test_img_list = []
 test_place_list=[]
 for place in place_list_2 : 
-    test_dir = os.path.join(path+'test/'+place)
+#     test_dir = os.path.join(path+'val/'+place)
+    test_dir = os.path.join(val_dir+place)
 
     test_list = os.listdir(test_dir)
     

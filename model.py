@@ -113,7 +113,8 @@ class Res2Net(nn.Module):
         self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
         self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
         self.avgpool = nn.AdaptiveAvgPool2d(1)
-        self.fc = nn.Linear(512 * block.expansion, num_classes)
+        self.fc1 = nn.Linear(512 * block.expansion, 3)
+        self.fc2 = nn.Linear(512 * block.expansion, 2)
         self.softmax = nn.Softmax(dim=-1)
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -156,7 +157,8 @@ class Res2Net(nn.Module):
         
         x = self.avgpool(con5)
         x = x.view(x.size(0), -1)
-        x = self.fc(x)
+        x = self.fc1(x)
+#         x2 = self.fc2(x)
         
         return x
 

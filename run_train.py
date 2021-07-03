@@ -7,7 +7,7 @@ import train
 from config import parse
 
 # os.environ['CUDA_VISIBLE_DEVICES']='1'
-os.environ['CUDA_VISIBLE_DEVICES']='0'
+os.environ['CUDA_VISIBLE_DEVICES']='0,1'
 config_path = './param_config.yml'
 config = parse(config_path)
 
