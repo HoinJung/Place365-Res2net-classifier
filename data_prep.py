@@ -16,21 +16,26 @@ import os
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import pandas as pd
+'''
+Making place list.
+train dataset => './data/train'
+test dataset => './data/test'
 
-# place 목록 생성
+No need validation dataset since we use validation split from train dataset. 
+You can setup the validation_split ratio in 'param_config.yml'
+
+'''
 path = "./data/"
 place_list_1 = os.listdir(path+'train')
-# val_dir = path+'val/'
 val_dir = path+'test/'
-# val_dir = path+'getMedia9/'
+
 print("train place list : num = %i " % len(place_list_1))
 print(place_list_1)
 
-# place label 생성
+# create place label
 encoder = LabelEncoder()
 
-
-# training image list 작성
+# training image list
 train_img_list = []
 train_place_list = []
 for place in place_list_1 : 
@@ -96,6 +101,5 @@ test_df.to_csv(path+'test.txt',mode='w')
 print("test place dataframe")
 print(test_df.head())
 print(len(test_df))
-
 
 print("completed")

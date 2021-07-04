@@ -1,7 +1,4 @@
 import yaml
-
-
-
 def parse(path):
     """Parse a config file for running a model.
 

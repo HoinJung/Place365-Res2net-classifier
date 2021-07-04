@@ -19,13 +19,12 @@ import numpy as np
 
 
 def data_generator(config, base_dir):
-    
     # generate dataset splitting train_set and valid_st
     # call the parameters
     random_seed= 42
     shuffle_dataset = True   
-    validation_split = 0.2
-#     validation_split = config['data']['val_holdout_frac']
+#     validation_split = 0.2 # default
+    validation_split = config['data']['val_holdout_frac']
     batch_size = config['training']['batch_size']
     num_class = config['training']['num_class']
     
@@ -78,16 +77,20 @@ class CustomDataset(Dataset):
         # remove index line
         del dataset[0]
         dataset_np = np.array(dataset)
+
         # input image root
         self.img_name = dataset_np[:,0]
         print("number of training data : %i" % len(self.img_name))
         
         # class if input images
         self.class_name = dataset_np[:,1].astype(np.int)
-#         self.class_name2 = dataset_np[:,2].astype(np.int)
+
 
         
         self.transform = transforms.Compose([transforms.RandomHorizontalFlip(p=0.5)])
+        
+        # augmentation part. 
+        # this part will be added in param_config.yml. 
 #         self.transform = transforms.Compose([transforms.RandomHorizontalFlip(p=0.5),transforms.RandomRotation(90),transforms.RandomVerticalFlip(p=0.5)])
     def __len__(self):
         return len(self.img_name)
@@ -113,12 +116,6 @@ class CustomDataset(Dataset):
         x = self.transform(x)
         y =  self.class_name[idx]
         return x, y
-#         y2 =  self.class_name2[idx]
-#         return x, y1, y2
-
-
-
-    
     
 class CustomDataset_test(Dataset):
     def __init__(self, base_dir, class_num):
@@ -150,12 +147,7 @@ class CustomDataset_test(Dataset):
     def __getitem__(self, idx):
         img_name = self.img_name[idx]
         img_data=pilimg.open(img_name).resize((256,256))
-        
-#         print('type : ', type(img_data))
-#         print('shape1 :', type(pilimg.open(img_name)))
-#         print('shape2 : ', type(img_data))
         img_arr = np.array(img_data) / 255
-#         print(img_arr)
         shape_val = img_arr.shape
 
         if len(shape_val) == 3 :
@@ -165,7 +157,7 @@ class CustomDataset_test(Dataset):
             x_input = torch.FloatTensor( [img_arr, img_arr, img_arr] )
         
         x = torch.FloatTensor(x_input)
-#         print(x.shape)
+
         y = self.class_name[idx]
         z = self.class_str[idx]
         return x, y,z,img_name
