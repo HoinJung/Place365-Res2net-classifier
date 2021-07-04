@@ -41,7 +41,7 @@ class Trainer(object):
         self.train_datagen, self.val_datagen, self.num = data_generator(self.config, self.data_dir) 
         
         self.loss = nn.CrossEntropyLoss()
-        self.patience = self.config['callbacks']['early_stopping']['patience']
+        self.patience = self.config['training']['callbacks']['early_stopping']['patience']
 
         self.lr = self.config['training']['learing_rate']
         self.opt = self.config['training']['optimizer']
