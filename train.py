@@ -95,7 +95,7 @@ class Trainer(object):
                 loss.backward()
                 self.optimizer.step()
 
-                if( batch_idx % 20 == 0 ):
+                if( batch_idx % 100 == 0 ):
 
                     
                     print('    loss at batch {}: {}'.format(batch_idx, loss), flush=True)
@@ -148,7 +148,7 @@ class Trainer(object):
                     best = val_loss
                     self.save_model(PATH_ckpt)
                     counter = 0
-                    print("____model saved at epoch : {0:d}, accuracy : {1:.2f}".format(epoch+1,val_loss))
+                    print("____model saved at epoch : {0:d}, validation loss : {1:.2f}".format(epoch+1,val_loss))
             if counter >= patience :
                 stop = True
             if stop:
