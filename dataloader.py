@@ -21,9 +21,11 @@ import numpy as np
 def data_generator(config, base_dir):
     # generate dataset splitting train_set and valid_st
     # call the parameters
+    shuffle = config['data']['shuffle']
     random_seed= 42
-    shuffle_dataset = True   
+    shuffle_dataset = shuffle   
 #     validation_split = 0.2 # default
+
     validation_split = config['data']['val_holdout_frac']
     batch_size = config['training']['batch_size']
     num_class = config['training']['num_class']

@@ -29,7 +29,7 @@ class Bottle2neck(nn.Module):
             type: 'normal': normal set. 'stage': first block of a new stage.
         """
         super(Bottle2neck, self).__init__()
-
+        
         width = int(math.floor(planes * (baseWidth/64.0)))
         self.conv1 = nn.Conv2d(inplanes, width*scale, kernel_size=1, bias=False)
         self.bn1 = nn.BatchNorm2d(width*scale)
@@ -94,9 +94,10 @@ class Bottle2neck(nn.Module):
 
 class Res2Net(nn.Module):
 
-    def __init__(self, block = Bottle2neck, layers = [3, 4, 6, 3], baseWidth = 26, scale = 4, num_classes = 4):
+    def __init__(self, config, block = Bottle2neck, layers = [3, 4, 6, 3], baseWidth = 26, scale = 4, num_classes = 189):
 #     def __init__(self, block, layers, baseWidth = 26, scale = 4, num_classes=189):        
-        
+        self.num_classes = config['training']['num_class']
+
         self.inplanes = 64
         super(Res2Net, self).__init__()
         self.baseWidth = baseWidth
@@ -111,7 +112,7 @@ class Res2Net(nn.Module):
         self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
         self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
         self.avgpool = nn.AdaptiveAvgPool2d(1)
-        self.fc = nn.Linear(512 * block.expansion, num_classes)
+        self.fc = nn.Linear(512 * block.expansion, self.num_classes)
         self.softmax = nn.Softmax(dim=-1)
         for m in self.modules():
             if isinstance(m, nn.Conv2d):

@@ -31,7 +31,7 @@ class Trainer(object):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         
         if self.model_name == 'Res2Net' :
-            self.model = Res2Net().to(self.device)
+            self.model = Res2Net(self.config).to(self.device)
             self.model = torch.nn.DataParallel(self.model)
         else : 
             print("Wrong Model Name")
@@ -41,8 +41,10 @@ class Trainer(object):
         self.train_datagen, self.val_datagen, self.num = data_generator(self.config, self.data_dir) 
         
         self.loss = nn.CrossEntropyLoss()
+        self.patience = self.config['callbacks']['early_stopping']['patience']
 
         self.lr = self.config['training']['learing_rate']
+        self.opt = self.config['training']['optimizer']
         self.opt = self.config['training']['optimizer']
         if self.opt == 'Adam':
             self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.lr)
@@ -133,7 +135,7 @@ class Trainer(object):
             self.scheduler.step()
         
             PATH_ckpt = self.model_path + "epoch_" + str(epoch+1).zfill(3) + '_ckpt.pth'
-            patience = 20
+            patience = self.patience
             
             val_loss = np.mean(val_loss)
             if best is None :

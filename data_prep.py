@@ -27,11 +27,9 @@ You can setup the validation_split ratio in 'param_config.yml'
 '''
 path = "./data/"
 place_list_1 = os.listdir(path+'train')
-val_dir = path+'test/'
+val_dir = path+'val/'
 
 print("train place list : num = %i " % len(place_list_1))
-print(place_list_1)
-
 # create place label
 encoder = LabelEncoder()
 
@@ -55,23 +53,22 @@ train_class_df = pd.DataFrame(encoder.transform(place_label_train))
 train_class_df.columns=['class']
 train_df = pd.concat([train_img_df,  train_place_df, train_class_df],axis=1 )
 train_df.to_csv(path+'train.txt',mode='w')
-print("train place dataframe")
-print(train_df.head())
-
-print("completed")
-
-# place_list_2 = os.listdir(path+'val')
 place_list_2 = os.listdir(val_dir)
-
+print('============================================')
+print("training set created")
 print("train place list : num = %i " % len(place_list_2))
-print(place_list_2)
+print("train images : {}".format(len(train_df)))
+print("train place dataframe and list")
+print(train_df.head())
+print('============================================')
 
-# test image list 작성
-# train place list와 test list 다름.
+print('============================================')
+
+# test image list (different from train place list와 test list)
 test_img_list = []
 test_place_list=[]
 for place in place_list_2 : 
-#     test_dir = os.path.join(path+'val/'+place)
+
     test_dir = os.path.join(val_dir+place)
 
     test_list = os.listdir(test_dir)
@@ -92,14 +89,18 @@ for label in np.unique(place_label_test) :
     if label not in encoder.classes_:
         encoder.classes_ = np.append(encoder.classes_, label)
         
-# encoder.fit(place_label)
-# encoder.fit(place_label_train)
+
 test_class_df = pd.DataFrame(encoder.transform(place_label_test))
 test_class_df.columns=['class']
 test_df = pd.concat([test_img_df,  test_place_df, test_class_df],axis=1 )
 test_df.to_csv(path+'test.txt',mode='w')
+
+
+
+print('============================================')
+print("test set created")
+print("test images : {}".format(len(test_df)))
 print("test place dataframe")
 print(test_df.head())
-print(len(test_df))
+print('============================================')
 
-print("completed")

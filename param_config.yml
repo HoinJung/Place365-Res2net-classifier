@@ -11,18 +11,16 @@ infer : false
 training :
   
   batch_size : 128
-
-#   batch_size : 
   epoch : 100
-  num_class : 4
+  num_class : 189
   learing_rate : 0.0001
   optimizer: Adam  
   callbacks:
     early_stopping:
-      patience: 5
+      patience: 20
     model_checkpoint :
       filepath : './result/'
-      monitor : periodic
+      
 data :
 
   data_dir : './data/'
