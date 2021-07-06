@@ -2,14 +2,11 @@
 model_name : Res2Net
 
 result_path : './result/'
+weight_file : 'final.pth'
 train : true
 infer : false
 
-
-
-
 training :
-  
   batch_size : 128
   epoch : 100
   num_class : 189
@@ -22,10 +19,9 @@ training :
       filepath : './result/'
       
 data :
-
   data_dir : './data/'
   shuffle : True
   val_holdout_frac : 0.2  
-    
+  video_file_name : 'video_name'
     
     

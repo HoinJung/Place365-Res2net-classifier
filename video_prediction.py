@@ -3,14 +3,16 @@ import torch
 import pandas as pd
 import numpy as np
 from model import Res2Net
-from model_block import Res2Net as RN
 import os
 import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 import copy
 
 import time
-
+from config import parse
+os.environ['CUDA_VISIBLE_DEVICES']='0,1'
+config_path = './param_config.yml'
+config = parse(config_path)
 now = time.localtime()
 '''
 Read the video data from mp4 file.
@@ -19,11 +21,11 @@ Setup the video directory, output directory, and file name(***.mp4)
 '''
 
 video_dir = './video/'
-file_name = 'getMedia9'
-out_dir = './result/video/'
+file_name = config['data']['video_file_name']
+out_dir = config['result_path']
 
 cap = cv2.VideoCapture(video_dir+file_name+'.mp4')
-model_path = 'result/final.pth'
+model_path = config['result_path'] + '/'+config['weight_file']
 width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 fps = cap.get(cv2.CAP_PROP_FPS)
@@ -32,18 +34,18 @@ fps = cap.get(cv2.CAP_PROP_FPS)
 fourcc = cv2.VideoWriter_fourcc(*'DIVX') # define the codec
 os.makedirs(out_dir,exist_ok=True)
 day = "_"+str(now.tm_mon)+"_"+str(now.tm_mday)+"_"
-_out = cv2.VideoWriter(out_dir+'prediction'+str(video_num)+day+'.mp4', fourcc, fps, (int(width), int(height)))
+_out = cv2.VideoWriter(out_dir+'prediction'+file_name+day+'.mp4', fourcc, fps, (int(width), int(height)))
 df =  pd.read_csv('./data/train.txt')
 df = df.loc[:,['class','place']]
 df = df.drop_duplicates()
 diction  = df.set_index('class', drop = False)
 device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
-model = Res2Net().to(device)
+model = Res2Net(config).to(device)
 model.load_state_dict(torch.load(model_path,map_location=device))
 
 
 print("start prediction the video work ================ ")
-print("video number : %d" % video_num)
+print("file_name : %s" % file_name)
 save_image_set = []
 model.eval()
 
@@ -58,6 +60,7 @@ with torch.no_grad():
 
         if not ret:
             print("Cannot load the Frame data...")
+            print("Prediction completed")
             break
             # if you just want to check the code work or not, you can stop at 100th frame.
 #         if count==100:
@@ -88,7 +91,7 @@ with torch.no_grad():
 
         score_,____ = prob.topk(3,dim=1)
         score_22, pred_indices = torch.topk(output_, 3 )
-        _, pred_indices_block = torch.topk(output_2, 1 )
+        
 
         prediction_name_idx = diction.loc[pred_indices[0][0].cpu().numpy().astype(int)]
 
@@ -98,8 +101,8 @@ with torch.no_grad():
 
 
         ## input to video section
-        text = str(prediction_name)
-        text2 = str(top_k_score)
+        text = '{0}'.format(prediction_name)
+        text2 = '{0:.4f}'.format(top_k_score)
         font = cv2.FONT_HERSHEY_SIMPLEX
         frame_origin = cv2.cvtColor(frame_origin, cv2.COLOR_RGB2BGR)
         cv2.putText(frame_origin, text, (50, 50), font, 2, (0, 0, 255), 4)
@@ -114,7 +117,7 @@ df1_b = pd.DataFrame(score_list,columns=['score'])
 df1 = pd.concat([df1_a,df1_b], axis=1)
 
 
-file_name = csv_dir+'{}_{}_{}_'.format(now.tm_mon, now.tm_mday,video_num)
+file_name = csv_dir+'{}_{}_{}_'.format(now.tm_mon, now.tm_mday,file_name)
 df1.to_csv(file_name+'.csv')
 
 cap.release()

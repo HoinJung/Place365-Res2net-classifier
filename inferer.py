@@ -28,11 +28,12 @@ class Inferer(object):
         self.batch_size = self.config['training']['batch_size']
         self.model_name = self.config['model_name']
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        self.weight_file = self.config['weight_file']
         if self.model_name == 'Res2Net' :
-            self.model = Res2Net().to(self.device)
+            self.model = Res2Net(self.config).to(self.device)
         else : 
             print("Wrong Model Name")            
-        self.model_path = self.config['result_path'] + '/final.pth'
+        self.model_path = self.config['result_path'] + '/'+self.weight_file
         self.num_class = self.config['training']['num_class']
         self.data_dir = self.config['data']['data_dir']
         self.test_datagen , self.count= data_generator_test(self.config, self.data_dir) 
