@@ -110,7 +110,8 @@ with torch.no_grad():
         place_list.append(text)
         score_list.append(text2)
         _out.write(frame_origin)
-csv_dir = './result/result_csv/'
+# csv_dir = './result/result_csv/'
+csv_dir = out_dir
 os.makedirs(csv_dir,exist_ok=True)
 df1_a = pd.DataFrame(place_list,columns=['predicted place'])
 df1_b = pd.DataFrame(score_list,columns=['score'])
