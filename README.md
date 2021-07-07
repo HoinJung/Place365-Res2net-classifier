@@ -30,7 +30,9 @@ To start train,
 
       python run_train.py
       
-The ```run_train.py``` execute ```train.py```.
+The ```run_train.py``` execute ```train.py```.   
+You can modify the classifier in ```model.py``` and ```class Res2Net```, 
+either ```model_name``` of ```param_config.yml```.
 
 ## Inference
 ### Test for the images in dataset.
@@ -39,7 +41,7 @@ To start test
      python test.py
      
 You can show the result top-5 prediction and accuracy.
-And the result will be saved as ```csv``` file in ```./result_csv/```.
+And the result will be saved as ```csv``` file in ```./result/```.
     
 ### Test for the video.    
 Make directory ```./video/``` and input a video you want to predict.
@@ -47,7 +49,15 @@ Run
 
      video_prediction.py
 
-The predicted data would be saved at ```./result/video/``` and ```./result_csv/```.
+The predicted data would be saved at ```./result```.
+
+#### Place prediction in video #1
+![place1](https://user-images.githubusercontent.com/69782440/124717961-9673bb00-df40-11eb-820a-01d25ed0e648.png)
+
+#### Place prediction in video #2
+
+![place2](https://user-images.githubusercontent.com/69782440/124718118-bdca8800-df40-11eb-8a9f-d021082b168d.png)
+
 
 * * *
 
